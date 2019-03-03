@@ -1,0 +1,144 @@
+<html>
+    <head>
+        <script type="text/javascript">
+            function CreateTwitterCard() {
+
+                var regex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/g
+                var pobj = document.getElementById('tweetTextBox').value.match(regex);
+                var url = pobj[pobj.length - 1];
+
+                //var json = '{"twitter:card":"summary","twitter:domain":"stackoverflow.com","twitter:title":"ASP.NET MVC: Json(IDictionary&lt;string, string&gt;) converts to array of key-value pairs","twitter:description":"If I have an IDictionary&amp;lt;string,string&amp;gt; /////MyDictionary that resembles this:{    {&quot;foo&quot;, &quot;bar&quot;},    {&quot;abc&quot;, &quot;xyz&quot;} }and in my MVC controller I have a method like so: [HttpPost] public","twitter:image":"https://cdn.sstatic.net/Sites/stackoverflow/img/apple-//touch-icon@2.png?v=73d79a89bded"}';
+                var json = '{"twitter:card":"summary_large_image","twitter:domain":"sproutsocial.com","twitter:title":"Always Up-to-Date Guide to Social Media Image Sizes","twitter:description":"From Twitter to Facebook to Google+, here&#039;s a guide to every important social media image size, which we always kept up-to-date.","twitter:image":"https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"}';
+                var obj = JSON.parse(json);
+
+                var img = document.createElement("img");
+                img.setAttribute("src", obj["twitter:image"]);
+                console.log(img.height + "," + img.width);
+
+                var titleHeading = document.createElement("h2");
+                titleHeading.innerHTML = HtmlParse(obj["twitter:title"]);
+                titleHeading.setAttribute("class", "twitterPreview-cardTitle");
+
+                var descriptionPara = document.createElement("p");
+                descriptionPara.innerHTML = HtmlParse(obj["twitter:description"]);
+                descriptionPara.setAttribute("class", "twitterPreview-cardDesciption");
+
+                var domainSpan = document.createElement("span");
+                domainSpan.innerHTML = HtmlParse(obj["twitter:domain"]);
+                domainSpan.setAttribute("class", "twitterPreview-cardDomain");
+
+                var summaryCardDiv = document.createElement("div");
+                summaryCardDiv.appendChild(titleHeading);
+                summaryCardDiv.appendChild(descriptionPara);
+                summaryCardDiv.appendChild(domainSpan);
+
+                var twitterCardAnchor = document.createElement("a");
+                twitterCardAnchor.setAttribute("href", url);
+                twitterCardAnchor.setAttribute("class", "twitterPreview-cardAnchor");
+                twitterCardAnchor.appendChild(img);
+                twitterCardAnchor.appendChild(summaryCardDiv);
+
+                var twitterCardDiv = document.createElement("div");
+                twitterCardDiv.appendChild(twitterCardAnchor);
+                document.getElementById("preview").appendChild(twitterCardDiv)
+                if (obj["twitter:card"] == "summary") {
+                    img.setAttribute("class", "twitterPreview-summaryCardImage");
+                    summaryCardDiv.setAttribute("class", "twitterPreview-summaryCardContent");
+                }
+                else {
+                    img.setAttribute("class", "twitterPreview-summaryLageCardImage");
+                    summaryCardDiv.setAttribute("class", "twitterPreview-summaryLargeCardContent");
+                }
+            }
+            function HtmlParse(encodedStr) {
+                var parser = new DOMParser;
+                var dom = parser.parseFromString('<!doctype html><body>' + encodedStr,'text/html');
+                return dom.body.textContent;
+            }
+        </script>
+        <style>
+            .twitterPreview-cardAnchor
+            {
+                text-decoration: none;
+            }
+            .twitterPreview-summaryCardImage
+            {
+                border: 1px solid #e1e8ed;
+                height: 125px;
+                width: 125px;
+                border-top-left-radius: 10px;
+                border-bottom-left-radius: 10px;
+                float: left;
+                display: inline-block;
+            }
+            .twitterPreview-summaryCardContent
+            {
+                border: 1px solid #e1e8ed;
+                border-left: none;
+                border-top-right-radius: 10px;
+                border-bottom-right-radius: 10px;
+                padding: 10px;
+                width: 360px;
+                height: 105px;
+                font-size: 14px;
+                font-family: "Helvetica Neue" ,Helvetica,Arial,sans-serif;
+                line-height: 1.3em;
+                display: inline-block;
+            }
+            .twitterPreview-summaryLageCardImage
+            {
+                border: 1px solid #e1e8ed;
+                height: 251px;
+                width: 502px;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+            .twitterPreview-summaryLargeCardContent
+            {
+                border: 1px solid #e1e8ed;
+                border-top: none;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                padding: 10px;
+                width: 482px;
+                height: 82px;
+                font-size: 14px;
+                color: black;
+                font-family: "Helvetica Neue" ,Helvetica,Arial,sans-serif;
+                line-height: 1.3em;
+            }
+            .twitterPreview-cardTitle
+            {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 1em;
+                white-space: nowrap;
+                max-height: 1.3em;
+                margin: 0 0 .15em;
+            }
+            .twitterPreview-cardDesciption
+            {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-height: 3.9em;
+                margin: 0px;
+                margin-top: .32333em;
+            }
+            .twitterPreview-cardDomain
+            {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-transform: lowercase;
+                color: #8899A6;
+                max-height: 1.3em;
+                margin-top: .32333em;
+            }
+            </style>
+    </head>
+    <body>
+        <input type="text" id="tweetTextBox"><br />
+        <input type="button" onclick="CreateTwitterCard()">
+        <div id="preview">
+        </div>
+    </body>
+</html>
