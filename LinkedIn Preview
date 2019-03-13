@@ -1,0 +1,228 @@
+ <html>
+    <head>
+        <script type="text/javascript">
+		
+			function Parse(){
+			document.getElementById('linkedInPreviewBody').innerHTML = "";
+				var post = document.getElementById('tweetTextBox').value;
+				var urlRegex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/g;
+				debugger;
+				var urlArray = post.match(urlRegex);
+				var urlParsedTweet = post.replace(urlRegex, url => {
+										return '<a href="' + url + '" class="urlText">' + url + '</a>';
+									})
+				var hashRegex = /\B(#[a-zA-z0-9]+\b)/g;
+				var hashParsedTweet = urlParsedTweet.replace(hashRegex, function(url) {
+										return '<a href="' + url + '" class="hashtagText">' + url + '</a>';
+									})
+				var div = document.createElement('div');
+				div.innerHTML = hashParsedTweet;
+				div.setAttribute("class", "linkedInPreview--bodyTextArea");
+				document.getElementById('linkedInPreviewBody').appendChild(div);
+				
+				if(urlArray.length>0)
+				{	
+					CreateLinkedInCard()
+				}
+				
+			}
+			    
+            function CreateLinkedInCard() {
+                var regex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/g
+                var pobj = document.getElementById('tweetTextBox').value.match(regex);
+                var url = pobj[pobj.length - 1];
+                //var json = '{"twitter:card":"summary","twitter:domain":"stackoverflow.com","twitter:title":"ASP.NET MVC: Json(IDictionary&lt;string, string&gt;) converts to array of key-value pairs","twitter:description":"If I have an IDictionary&amp;lt;string,string&amp;gt; /////MyDictionary that resembles this:{    {&quot;foo&quot;, &quot;bar&quot;},    {&quot;abc&quot;, &quot;xyz&quot;} }and in my MVC controller I have a method like so: [HttpPost] public","twitter:image":"https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon@2.png?v=73d79a89bded"}';
+                var json = '{"twitter:card":"summary_large_image","twitter:domain":"sproutsocial.com","twitter:title":"Always Up-to-Date Guide to Social Media Image Sizes","twitter:description":"From Twitter to Facebook to Google+, here&#039;s a guide to every important social media image size, which we always kept up-to-date.","twitter:image":"https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"}';
+                //var json = '{"twitter:card":"summary_large_image","twitter:domain":"haacked.com","twitter:title":"Sending JSON to an ASP.NET MVC Action Method Argument","twitter:description":"Youve been Haacked is a blog about Technology, Software, Management, and Open Source. Its full of good stuff.","twitter:image":"https://2.gravatar.com/avatar/cdf546b601bf29a7eb4ca777544d11cd?s=160"}';
+                var obj = JSON.parse(json);              
+               
+                var img = document.createElement("img");
+                img.setAttribute("src", obj["twitter:image"]);
+                console.log(img.height + "," + img.width);
+                var imgDiv = document.createElement("div");
+                imgDiv.appendChild(img);
+                var titleHeading = document.createElement("h2");
+                titleHeading.innerHTML = HtmlParse(obj["twitter:title"]);
+                titleHeading.setAttribute("class", "linkedInPreview-cardTitle");
+                var domainSpan = document.createElement("span");
+                
+                domainSpan.setAttribute("class", "linkedInPreview-cardDomain");
+                var summaryCardDiv = document.createElement("div");
+                summaryCardDiv.appendChild(titleHeading);
+                summaryCardDiv.appendChild(domainSpan);
+                
+					img.onload = ()=>ImageResize(img,522,288);	
+                    imgDiv.setAttribute("class", "linkedInPreview-summaryLageCardImageDiv");
+                    summaryCardDiv.setAttribute("class", "linkedInPreview-summaryLargeCardContent");
+               
+                
+                var linkedInCardAnchor = document.createElement("a");
+                linkedInCardAnchor.setAttribute("href", url);
+                linkedInCardAnchor.setAttribute("class", "linkedInPreview-cardAnchor");
+                linkedInCardAnchor.appendChild(imgDiv);
+                linkedInCardAnchor.appendChild(summaryCardDiv);
+				domainSpan.innerHTML = linkedInCardAnchor.hostname;
+                var linkedInCardDiv = document.createElement("div");
+                linkedInCardDiv.appendChild(linkedInCardAnchor);
+                document.getElementById("linkedInPreviewBody").appendChild(linkedInCardDiv);	
+            }
+            function HtmlParse(encodedStr) {
+                var parser = new DOMParser;
+                var dom = parser.parseFromString('<!doctype html><body>' + encodedStr,'text/html');
+                return dom.body.textContent;
+            }
+            function ImageResize(image, targetWidth, targetHeight) {
+				debugger;
+				var width = image.naturalWidth;
+				var height = image.naturalHeight;
+				image.width = targetWidth;
+				var corsHeight = (targetWidth/width)*height;
+				image.height = corsHeight;
+				image.style.transform = 'translatey(-' + parseInt((corsHeight - targetHeight)/2) + 'px)';
+				image.style.webkitTransform = 'translateY(-' + parseInt((corsHeight - targetHeight)/2) + 'px)';
+            }	
+        </script>
+        <style>
+			.urlText
+			{
+				text-decoration:none;
+				color:#0073b1;
+				font-weight:450;
+			}
+			.urlText:hover
+			{
+				text-decoration:underline;
+				color:#665ed0;
+			}
+			.hashtagText
+			{
+				text-decoration:none;
+				color:#0073b1;
+				font-weight:450;
+			}
+			.hashtagText:hover
+			{
+				color:#665ed0;
+			}
+			.urlText:hover
+			{
+				text-decoration:underline;
+				color:#665ed0;
+			}
+            .linkedInPreview-cardAnchor
+            {
+                text-decoration: none;
+            }
+            .linkedInPreview-summaryLageCardImageDiv
+            {
+                height: 288px;
+                width: 522px;   
+                overflow:hidden;
+			}
+            .linkedInPreview-summaryLargeCardContent
+            {
+                padding: 12px;
+				padding-top:8px;
+                width: 498px; //522
+                height: 64px; //84
+                color: black;
+                line-height: 1.3em;
+				background-color:#f3f6f8;
+            }
+            .linkedInPreview-cardTitle
+            {
+                display: block;
+				line-height: 2rem!important;
+				max-height: 4rem;
+				overflow: hidden;
+				margin:0px;
+				font-size:100%;
+				font-weight:600;
+            }
+            .linkedInPreview-cardDomain
+            {
+                white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+                text-transform: lowercase;
+                color: rgba(0,0,0,.6);
+				font-weight:400;
+				line-height: 1.33333;
+                margin-top: 8px;
+            }
+			.artdeco-button__text
+			{
+				color: #b3b6b9;
+				padding:0px 8px;
+				font-weight:450;
+			}
+			.artdeco-icon
+			{
+				color: #666666;
+				margin-right:4px;
+			}
+			.linkedInPreview
+			{
+				width:522px;
+				border: 1px solid #00000033;
+				border-radius: 2px;
+				overflow:hidden;
+				font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Fira Sans",Ubuntu,Oxygen,"Oxygen Sans",Cantarell,"Droid Sans","Apple Color Emoji","Segoe UI Emoji","Segoe UI Emoji","Segoe UI Symbol","Lucida Grande",Helvetica,Arial,sans-serif;
+				font-size: 13px;
+			}
+			.linkedInPreview--header
+			{
+				padding: 12px 40px 0px 16px;
+				margin-bottom:8px;
+				height:52px; 
+			}
+			.linkedInPreview--footer
+			{	
+				padding:8px 8px 0px 8px;	
+				height:32px; //40
+			}
+			.linkedInPreview--body
+			{
+				font-size: 13px;
+			}
+			.linkedInPreview--bodyTextArea{
+				padding:16px;
+			}
+            </style>
+    </head>
+    <body>
+        <input type="text" id="tweetTextBox"><br />
+        <input type="button" onclick="Parse()">
+        <div id="linkedInPreview" class="linkedInPreview">
+		<div id ="linkedInPreviewHeader" class="linkedInPreview--header">
+		</div>
+		<div id="linkedInPreviewBody" class="linkedInPreview--body">
+		</div>
+			<div id="ember1283" class="linkedInPreview--footer">        
+			<span data-control-name="like_toggle" aria-pressed="false" aria-label="Like Ananth FMR’S post" id="ember1284" class="like-button button like feed-shared-social-action-bar__action-btn ember-view"><!---->
+				<span class="artdeco-button__text">
+					
+				  <li-icon aria-hidden="true" type="like-icon" class="like-icon"><svg viewBox="0 0 24 24" width="24px" height="24px" x="0" y="0" preserveAspectRatio="xMinYMin meet" class="artdeco-icon" focusable="false"><path d="M17.51,11L15.36,8a14.81,14.81,0,0,1-2.25-5.29L12.74,1H10.5A2.5,2.5,0,0,0,8,3.5V4.08a9,9,0,0,0,.32,2.39L9,9H4.66A2.61,2.61,0,0,0,2,11.4a2.48,2.48,0,0,0,.39,1.43,2.48,2.48,0,0,0,.69,3.39,2.46,2.46,0,0,0,1.45,2.92,2.47,2.47,0,0,0,0,.36A2.5,2.5,0,0,0,7,22h4.52a8,8,0,0,0,1.94-.24l3-.76H21V11H17.51ZM19,19H16.88l-3.41.82A6,6,0,0,1,12,20H7a0.9,0.9,0,0,1-.9-0.89s0-.07,0-0.14l0.15-1-1-.4a0.9,0.9,0,0,1-.55-0.83,0.93,0.93,0,0,1,0-.22L5,15.57,4.27,15a0.9,0.9,0,0,1-.39-0.74A0.88,0.88,0,0,1,4,13.82l0.46-.72L4,12.38a0.88,0.88,0,0,1-.14-0.51,1,1,0,0,1,1-.87H11.5L10.2,6.3a9,9,0,0,1-.33-2.37V3.38a0.5,0.5,0,0,1,.5-0.5h0.95a17.82,17.82,0,0,0,2.52,6.22L16.6,13H19v6Z" class="large-icon" style="fill: currentColor"></path></svg></li-icon>
+				  
+					<span aria-hidden="true" class="t-14">Like</span>
+
+				</span></span>
+						<span data-control-name="comment" id="ember1286" class="button comment feed-shared-social-action-bar__action-btn social-action-btn ember-view">
+				<span class="artdeco-button__text">
+					<li-icon aria-hidden="true" type="speech-bubble-icon" class="feed-shared-social-action-bar-icon"><svg viewBox="0 0 24 24" width="24px" height="24px" x="0" y="0" preserveAspectRatio="xMinYMin meet" class="artdeco-icon" focusable="false"><path d="M18,10H6V9H18v1Zm4-5V22l-5-4H3a1,1,0,0,1-1-1V5A1,1,0,0,1,3,4H21A1,1,0,0,1,22,5ZM20,6H4V16H17.7L20,17.84V6Zm-4,6H8v1h8V12Z" class="large-icon" style="fill: currentColor"></path></svg></li-icon><span aria-hidden="true" class="t-14 ml1">Comment</span>
+
+				</span></span>
+						  <span data-control-name="reshare" id="ember1288" class="feed-shared-social-action-bar__action-btn feed-shared-social-action-bar__reshare-button reshare-button button reshare social-action-btn ember-view">
+				<span class="artdeco-button__text">
+					
+				  <li-icon type="share-linkedin-icon" size="large" role="img" aria-label="Share"><svg viewBox="0 0 24 24" width="24px" height="24px" x="0" y="0" preserveAspectRatio="xMinYMin meet" class="artdeco-icon" focusable="false"><path d="M24,12h0a1.18,1.18,0,0,0-.36-0.84L14,2V8H11A10,10,0,0,0,1,18v4H2.87A6.11,6.11,0,0,1,9,16h5v6l9.63-9.14A1.18,1.18,0,0,0,24,12s0,0,0,0h0Zm-8,5.54V14H9a8.15,8.15,0,0,0-6,2.84A8,8,0,0,1,11,10h5V6.48L21.81,12Z" class="large-icon" style="fill: currentColor"></path></svg></li-icon>
+
+				  <span aria-hidden="true" class="t-14 ml1 ">Share</span>
+
+				</span>
+				<!----></span>
+				<!---->
+				</div>
+        </div>
+    </body>
+</html>
