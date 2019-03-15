@@ -1,0 +1,109 @@
+.urlText {
+    text-decoration: none;
+    color: #0073b1;
+    font-weight: 600;
+}
+
+.urlText:active {
+    text-decoration: underline;
+    color: #665ed0;
+}
+
+.hashtagText {
+    text-decoration: none;
+    color: #0073b1;
+    font-weight: 600;
+}
+
+    .hashtagText:active{
+        color: #665ed0;
+    }
+
+.urlText:hover {
+    text-decoration: underline;
+    color: #665ed0;
+}
+
+.linkedInPreview-cardAnchor {
+    text-decoration: none;
+}
+.linkedInPreview-cardAnchor:hover {
+    text-decoration: none;
+}
+
+.linkedInPreview-summaryLageCardImageDiv {
+    height: 288px;
+    width: 522px;
+    overflow: hidden;
+}
+
+.linkedInPreview-summaryLargeCardContent {
+    padding: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 522px; /*498*/
+    color: black;
+    line-height: 1.3em;
+    background-color: #f3f6f8;
+}
+
+.linkedInPreview-cardTitle {
+    display: block;
+    line-height: 2rem !important;
+    max-height: 4rem;
+    overflow: hidden;
+    margin: 0px;
+    font-size: 100%;
+    font-weight: 600;
+}
+
+.linkedInPreview-cardDomain {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: lowercase;
+    color: rgba(0,0,0,.6);
+    font-weight: 400;
+    line-height: 1.33333;
+    margin-top: 8px;
+    font-size:12px;
+}
+
+.artdeco-button__text {
+    color: #b3b6b9;
+    padding: 0px 8px;
+    font-weight: 450;
+}
+
+.artdeco-icon {
+    color: #666666;
+    margin-right: 4px;
+}
+
+.linkedInPreview {
+    width: 522px;
+    border: 1px solid #00000033;
+    border-radius: 2px;
+    overflow: hidden;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Fira Sans",Ubuntu,Oxygen,"Oxygen Sans",Cantarell,"Droid Sans","Apple Color Emoji","Segoe UI Emoji","Segoe UI Emoji","Segoe UI Symbol","Lucida Grande",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+}
+
+.linkedInPreview--header {
+    padding: 12px 40px 0px 16px;
+    margin-bottom: 8px;
+    height: 52px;
+}
+
+.linkedInPreview--footer {
+    padding: 8px 8px 0px 8px;
+    height: 40px;
+}
+
+.linkedInPreview--body {
+    font-size: 14px;
+}
+
+.linkedInPreview--bodyTextArea {
+    padding: 16px;
+}
