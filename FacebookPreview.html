@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <script type="text/javascript">
+		
+			function Parse(){
+			document.getElementById('FacebookPreviewBody').innerHTML = "";
+				var post = document.getElementById('tweetTextBox').value;
+				var urlRegex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/g;
+				debugger;
+				var urlArray = post.match(urlRegex);
+				var urlParsedTweet = post.replace(urlRegex, url => {
+										return '<a href="' + url + '" class="urlText">' + url + '</a>';
+									})
+				var hashRegex = /\B(#[a-zA-z0-9]+\b)/g;
+				var hashParsedTweet = urlParsedTweet.replace(hashRegex, function(url) {
+										return '<a href="' + url + '" class="hashtagText">' + url + '</a>';
+									})
+				var div = document.createElement('div');
+				div.innerHTML = hashParsedTweet;
+				div.setAttribute("class", "FacebookPreview--bodyTextArea");
+				document.getElementById('FacebookPreviewBody').appendChild(div);
+				
+				if(urlArray.length>0)
+				{	
+					CreateFacebookCard()
+				}
+				
+			}
+			    
+            function CreateFacebookCard() {
+                var regex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/g
+                var pobj = document.getElementById('tweetTextBox').value.match(regex);
+                var url = pobj[pobj.length - 1];
+                //var json = '{"twitter:card":"summary","twitter:domain":"stackoverflow.com","twitter:title":"ASP.NET MVC: Json(IDictionary&lt;string, string&gt;) converts to array of key-value pairs","twitter:description":"If I have an IDictionary&amp;lt;string,string&amp;gt; /////MyDictionary that resembles this:{    {&quot;foo&quot;, &quot;bar&quot;},    {&quot;abc&quot;, &quot;xyz&quot;} }and in my MVC controller I have a method like so: [HttpPost] public","twitter:image":"https://cdn.sstatic.net/Sites/stackoverflow/img/apple-touch-icon@2.png?v=73d79a89bded"}';
+                var json = '{"twitter:card":"summary_large_image","twitter:domain":"sproutsocial.com","twitter:title":"Always Up-to-Date Guide to Social Media Image Sizes","twitter:description":"From Twitter to Facebook to Google+, here&#039;s a guide to every important social media image size, which we always kept up-to-date.","twitter:image":"https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"}';
+                //var json = '{"twitter:card":"summary_large_image","twitter:domain":"haacked.com","twitter:title":"Sending JSON to an ASP.NET MVC Action Method Argument","twitter:description":"Youve been Haacked is a blog about Technology, Software, Management, and Open Source. Its full of good stuff.","twitter:image":"https://2.gravatar.com/avatar/cdf546b601bf29a7eb4ca777544d11cd?s=160"}';
+                var obj = JSON.parse(json);              
+               
+                var img = document.createElement("img");
+                img.setAttribute("src", obj["twitter:image"]);
+                console.log(img.height + "," + img.width);
+                var imgDiv = document.createElement("div");
+                imgDiv.appendChild(img);
+                var titleHeading = document.createElement("h2");
+                titleHeading.innerHTML = HtmlParse(obj["twitter:title"]);
+                titleHeading.setAttribute("class", "FacebookPreview-cardTitle");
+                var domainSpan = document.createElement("span");                
+                domainSpan.setAttribute("class", "FacebookPreview-cardDomain");
+                var summaryCardDiv = document.createElement("div");
+				var description = document.createElement("div");
+				description.setAttribute("class","FacebookPreview-cardDescription")
+				description.innerHTML = HtmlParse(obj["twitter:description"])
+				summaryCardDiv.appendChild(domainSpan);
+                summaryCardDiv.appendChild(titleHeading);
+				summaryCardDiv.appendChild(description);
+				img.onload = ()=>{
+					if(img.width > 600)
+					{
+						ImageResize(img,500,261);	
+						imgDiv.setAttribute("class", "FacebookPreview-summaryLageCardImageDiv");
+						summaryCardDiv.setAttribute("class", "FacebookPreview-summaryLargeCardContent");
+					}
+					else
+					{	
+						
+					}   
+				}		
+                var FacebookCardAnchor = document.createElement("a");
+                FacebookCardAnchor.setAttribute("href", url);
+                FacebookCardAnchor.setAttribute("class", "FacebookPreview-cardAnchor");
+                FacebookCardAnchor.appendChild(imgDiv);
+                FacebookCardAnchor.appendChild(summaryCardDiv);
+				domainSpan.innerHTML = FacebookCardAnchor.hostname;
+                var FacebookCardDiv = document.createElement("div");
+                FacebookCardDiv.appendChild(FacebookCardAnchor);
+                document.getElementById("FacebookPreviewBody").appendChild(FacebookCardDiv);	
+            }
+            function HtmlParse(encodedStr) {
+                var parser = new DOMParser;
+                var dom = parser.parseFromString('<!doctype html><body>' + encodedStr,'text/html');
+                return dom.body.textContent;
+            }
+            function ImageResize(image, targetWidth, targetHeight) {
+				debugger;
+				var width = image.naturalWidth;
+				var height = image.naturalHeight;
+				image.width = targetWidth;
+				var corsHeight = (targetWidth/width)*height;
+				image.height = corsHeight;
+				image.style.transform = 'translatey(-' + parseInt((corsHeight - targetHeight)/2) + 'px)';
+				image.style.webkitTransform = 'translateY(-' + parseInt((corsHeight - targetHeight)/2) + 'px)';
+            }	
+        </script>
+        <style>			
+			.FacebookPreview
+			{
+				width:500px;
+				border: 1px solid #00000033;
+				border-radius: 2px;
+				overflow:hidden;
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 12px
+			}
+			.FacebookPreview--header
+			{
+				padding: 12px 40px 0px 16px;
+				margin-bottom:8px;
+				height:52px; 
+			}
+			
+			.FacebookPreview--body
+			{
+				font-size: 13px;
+			}
+			.FacebookPreview--bodyTextArea{
+				padding:16px;
+			}
+			.urlText
+			{
+				text-decoration:none;
+				color:#0073b1;
+				font-weight:450;
+			}
+			.urlText:hover
+			{
+				text-decoration:underline;
+				color:#665ed0;
+			}
+			.hashtagText
+			{
+				text-decoration:none;
+				color:#0073b1;
+				font-weight:450;
+			}
+			.hashtagText:hover
+			{
+				color:#665ed0;
+			}
+			.urlText:hover
+			{
+				text-decoration:underline;
+				color:#665ed0;
+			}
+            .FacebookPreview-cardAnchor
+            {
+                text-decoration: none;
+            }
+            .FacebookPreview-summaryLageCardImageDiv
+            {
+                height: 261px;
+                width: 500px;   
+                overflow:hidden;
+			}
+            .FacebookPreview-summaryLargeCardContent
+            {
+                padding: 12px;
+				padding-top:8px;
+                width: 500px;
+                color: black;
+                line-height: 1.3em;
+				background-color:#f3f6f8;
+            }
+            .FacebookPreview-cardTitle
+            {
+                display: block;
+				line-height: 20px;
+				margin-bottom:0px;
+				overflow: hidden;
+				margin-top:5px;
+				font-size:16px;
+				font-weight:600;
+            }
+            .FacebookPreview-cardDomain
+            {
+                color: #606770;
+				font-size: 12px;
+				line-height: 16px;			
+				text-overflow: ellipsis;
+				text-transform: uppercase;
+				white-space: nowrap;
+            }
+			.FacebookPreview-cardDescription
+			{
+				color: #606770;
+				font-size: 14px;
+				line-height: 20px;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				margin-top:3px;
+				overflow: hidden;
+			}
+			.FacebookPreview--footer
+			{	
+				padding:8px 8px 0px 8px;	
+				height:32px; //40
+			}
+			.artdeco-button__text
+			{
+				align-items: center;
+				color: #606770;	
+				width:157px;
+				float:left;
+				font-weight: 600;
+				height: 32px;
+				justify-content: center;
+				line-height: 14px;
+				padding: 0 2px;
+				position: relative;
+				text-decoration: none;
+				transition: 400ms cubic-bezier(.08,.52,.52,1) transform;
+				
+			}
+			.sp_Gxq2MXbT8dg {
+				background-size: auto;
+				background-repeat: no-repeat;
+				display: inline-block;
+				height: 16px;
+				width: 16px;
+			}
+            </style>
+    </head>
+    <body>
+        <input type="text" id="tweetTextBox"><br />
+        <input type="button" onclick="Parse()">
+        <div id="FacebookPreview" class="FacebookPreview">
+		<div id ="FacebookPreviewHeader" class="FacebookPreview--header">
+		</div>
+		<div id="FacebookPreviewBody" class="FacebookPreview--body">
+		</div>
+			<div id="ember1283" class="FacebookPreview--footer">   
+				<div class="artdeco-button__text" >			
+					<img src="Like.png" class="sp_Gxq2MXbT8dg sx_1f64bb" alt=""></img>Like
+				</div>
+				<div class="artdeco-button__text">			
+					<img src="comment.png" class="sp_Gxq2MXbT8dg sx_1f64bb" alt=""></img>Comment
+				</div>
+				<div class="artdeco-button__text">			
+					<img src="share.png" class="sp_Gxq2MXbT8dg sx_1f64bb" alt=""></img>Share
+				</div>
+			</div>
+		</div>
+		
+    </body>
+</html>
